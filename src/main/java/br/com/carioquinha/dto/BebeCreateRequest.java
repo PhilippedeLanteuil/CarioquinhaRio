@@ -10,7 +10,7 @@ public class BebeCreateRequest {
     public Long maternidadeId;
     public String mensagemResponsavel;
 
-    // foto opcional
+    // opcional
     public String fotoBase64;
     public String fotoMime;
 }

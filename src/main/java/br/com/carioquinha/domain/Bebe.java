@@ -1,12 +1,16 @@
 package br.com.carioquinha.domain;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "bebe")
-public class Bebe extends PanacheEntity {
+public class Bebe extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @Column(nullable = false, length = 150)
     public String nome;
@@ -28,7 +32,7 @@ public class Bebe extends PanacheEntity {
     public String mensagemResponsavel;
 
     @Lob
-    @Column(name = "foto_base64")
+    @Column(name = "foto_base64", columnDefinition = "LONGTEXT")
     public String fotoBase64;
 
     @Column(name = "foto_mime", length = 50)

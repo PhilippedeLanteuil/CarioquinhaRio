@@ -1,40 +1,38 @@
 package br.com.carioquinha.error;
 
+import br.com.carioquinha.dto.ErrorResponse;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-import java.util.Map;
-
 @Provider
 public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Override
     public Response toResponse(Throwable ex) {
-        // Se já é erro HTTP (400/404/etc), respeita
         if (ex instanceof WebApplicationException wae) {
-            Response r = wae.getResponse();
-            int status = r.getStatus();
+            int status = wae.getResponse() != null ? wae.getResponse().getStatus() : 500;
 
-            // Para 404 vazio, deixamos só o status (o PHP vai tratar e mostrar a msg) :contentReference[oaicite:14]{index=14}
-            if (status == 404 && (r.getEntity() == null)) {
+            // Para 404 (consulta sem resultados), você pode retornar só o status (sem body)
+            if (status == 404 && (wae.getMessage() == null || wae.getMessage().isBlank())) {
                 return Response.status(404).build();
             }
 
+            String msg = (wae.getMessage() == null || wae.getMessage().isBlank())
+                    ? "Erro"
+                    : wae.getMessage();
+
             return Response.status(status)
                     .type(MediaType.APPLICATION_JSON)
-                    .entity(Map.of(
-                            "error", wae.getMessage() == null ? "Erro" : wae.getMessage()
-                    ))
+                    .entity(new ErrorResponse(msg))
                     .build();
         }
 
-        // Erro inesperado
         return Response.status(500)
                 .type(MediaType.APPLICATION_JSON)
-                .entity(Map.of("error", "Erro inesperado"))
+                .entity(new ErrorResponse("Erro inesperado"))
                 .build();
     }
 }
