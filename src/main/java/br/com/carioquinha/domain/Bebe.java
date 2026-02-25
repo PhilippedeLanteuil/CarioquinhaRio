@@ -1,8 +1,10 @@
 package br.com.carioquinha.domain;
 
+import io.quarkus.hibernate.orm.JsonFormat;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bebe")
@@ -16,7 +18,7 @@ public class Bebe extends PanacheEntityBase {
     public String nome;
 
     @Column(name = "data_nascimento", nullable = false)
-    public LocalDate dataNascimento;
+    public LocalDateTime dataNascimento;
 
     @Column(name = "nome_mae", nullable = false, length = 150)
     public String nomeMae;

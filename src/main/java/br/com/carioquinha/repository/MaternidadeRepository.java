@@ -5,4 +5,5 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class MaternidadeRepository implements PanacheRepository<Maternidade> { }
+public class MaternidadeRepository implements PanacheRepository<Maternidade> {
+}

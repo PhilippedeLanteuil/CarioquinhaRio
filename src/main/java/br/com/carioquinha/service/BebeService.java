@@ -33,63 +33,26 @@ public class BebeService {
         if (maternidade == null) {
             throw new WebApplicationException("Maternidade não encontrada", 404);
         }
-
-        Bebe bebe = new Bebe();
-        bebe.nome = req.nome.trim();
-        bebe.dataNascimento = req.dataNascimento;
-        bebe.nomeMae = req.nomeMae.trim();
-        bebe.nomePai = (req.nomePai == null || req.nomePai.isBlank()) ? null : req.nomePai.trim();
-        bebe.maternidade = maternidade;
-        bebe.mensagemResponsavel = req.mensagemResponsavel.trim();
-        bebe.fotoBase64 = (req.fotoBase64 == null || req.fotoBase64.isBlank()) ? null : req.fotoBase64;
-        bebe.fotoMime = (req.fotoMime == null || req.fotoMime.isBlank()) ? null : req.fotoMime;
-
+        Bebe bebe = criarEntidadeBebe(req, maternidade);
         bebeRepository.persist(bebe);
 
-        LogAuditoria log = new LogAuditoria();
-        log.idBebe = bebe.id;
-        log.dataHora = LocalDateTime.now();
-        log.operador = (operador == null || operador.isBlank()) ? "web" : operador.trim();
-        logAuditoriaRepository.persist(log);
+        enviarlogAuditoria(bebe, operador);
 
         return toResponse(bebe);
     }
-
-    public List<BebeResponse> consultar(String nome, String dataNascimento, Long maternidadeId) {
-        StringBuilder where = new StringBuilder("1=1");
-        Parameters params = new Parameters();
-
-        if (nome != null && !nome.isBlank()) {
-            where.append(" and lower(nome) like :nome");
-            params.and("nome", "%" + nome.toLowerCase().trim() + "%");
+    public void enviarlogAuditoria(Bebe bebe, String operador){
+        try {
+            LogAuditoria log = new LogAuditoria();
+            log.idBebe = bebe.id;
+            log.idOperador = operador;
+            log.dataHora = LocalDateTime.now();
+            log.acaoRealizada = "Criacao Bebe";
+            logAuditoriaRepository.persist(log);
+        } catch (Exception e){
+            throw new RuntimeException(e);
         }
-
-        if (dataNascimento != null && !dataNascimento.isBlank()) {
-            LocalDate dt;
-            try {
-                dt = LocalDate.parse(dataNascimento.trim());
-            } catch (Exception e) {
-                throw new WebApplicationException("dataNascimento inválida. Use YYYY-MM-DD", 400);
-            }
-            where.append(" and dataNascimento = :dt");
-            params.and("dt", dt);
-        }
-
-        if (maternidadeId != null) {
-            where.append(" and maternidade.id = :mid");
-            params.and("mid", maternidadeId);
-        }
-
-        // Ordenação A-Z por nome
-        List<Bebe> lista = bebeRepository.find(where + " order by nome asc", params).list();
-
-        if (lista.isEmpty()) {
-            // regra do teste: 404 quando não encontrar
-            throw new WebApplicationException(404);
-        }
-
-        return lista.stream().map(BebeService::toResponse).toList();
     }
+
 
     private void validarObrigatorios(BebeCreateRequest req) {
         if (req == null
@@ -118,5 +81,17 @@ public class BebeService {
             r.maternidadeNome = b.maternidade.nome;
         }
         return r;
+    }
+    public Bebe criarEntidadeBebe(BebeCreateRequest req, Maternidade maternidade){
+        Bebe bebe = new Bebe();
+        bebe.nome = req.nome.trim();
+        bebe.dataNascimento = req.dataNascimento;
+        bebe.nomeMae = req.nomeMae.trim();
+        bebe.nomePai = (req.nomePai == null || req.nomePai.isBlank()) ? null : req.nomePai.trim();
+        bebe.maternidade = maternidade;
+        bebe.mensagemResponsavel = req.mensagemResponsavel.trim();
+        bebe.fotoBase64 = (req.fotoBase64 == null || req.fotoBase64.isBlank()) ? null : req.fotoBase64;
+        bebe.fotoMime = (req.fotoMime == null || req.fotoMime.isBlank()) ? null : req.fotoMime;
+        return bebe;
     }
 }

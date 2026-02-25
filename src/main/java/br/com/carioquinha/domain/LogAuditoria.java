@@ -19,5 +19,8 @@ public class LogAuditoria extends PanacheEntityBase {
     public LocalDateTime dataHora;
 
     @Column(nullable = false, length = 100)
-    public String operador;
+    public String acaoRealizada;
+
+    @Column(name = "id_operador", nullable = false)
+    public String idOperador;
 }
