@@ -3,6 +3,7 @@ package br.com.carioquinha.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import br.com.carioquinha.domain.Bebe;
 import br.com.carioquinha.domain.LogAuditoria;
@@ -40,6 +41,15 @@ public class BebeService {
 
         return toResponse(bebe);
     }
+    @Transactional
+    public List<BebeResponse> listarTodosBebes() {
+
+        List<Bebe> bebes = Bebe.findAll().list();
+
+        return bebes.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
     public void enviarlogAuditoria(Bebe bebe, String operador){
         try {
             LogAuditoria log = new LogAuditoria();
@@ -65,7 +75,7 @@ public class BebeService {
         }
     }
 
-    public static BebeResponse toResponse(Bebe b) {
+    public BebeResponse toResponse(Bebe b) {
         BebeResponse r = new BebeResponse();
         r.id = b.id;
         r.nome = b.nome;

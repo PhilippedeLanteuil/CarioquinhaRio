@@ -1,4 +1,4 @@
-package br.com.carioquinha.resource;
+package br.com.carioquinha.controller;
 
 import br.com.carioquinha.dto.BebeCreateRequest;
 import br.com.carioquinha.dto.BebeResponse;
@@ -27,4 +27,12 @@ public class BebeController {
         BebeResponse bebeEntity = bebeService.criar(req, operador);
         return Response.status(Response.Status.CREATED).entity(bebeEntity).build();
     }
+
+    @GET
+    public Response listarBebes(){
+        List<BebeResponse> listaBebes = bebeService.listarTodosBebes();
+        return Response.status(Response.Status.OK).entity(listaBebes).build();
+
+    }
+
 }
