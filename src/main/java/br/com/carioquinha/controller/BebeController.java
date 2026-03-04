@@ -1,6 +1,7 @@
 package br.com.carioquinha.controller;
 
 import br.com.carioquinha.dto.BebeCreateRequest;
+import br.com.carioquinha.dto.BebeGetRequest;
 import br.com.carioquinha.dto.BebeResponse;
 import br.com.carioquinha.service.BebeService;
 import jakarta.inject.Inject;
@@ -29,8 +30,8 @@ public class BebeController {
     }
 
     @GET
-    public Response listarBebes(){
-        List<BebeResponse> listaBebes = bebeService.listarTodosBebes();
+    public Response listarBebes(@BeanParam BebeGetRequest req){
+        List<BebeResponse> listaBebes = bebeService.listarTodosBebes(req.getNome());
         return Response.status(Response.Status.OK).entity(listaBebes).build();
 
     }

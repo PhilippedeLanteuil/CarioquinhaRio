@@ -9,6 +9,7 @@ import br.com.carioquinha.domain.Bebe;
 import br.com.carioquinha.domain.LogAuditoria;
 import br.com.carioquinha.domain.Maternidade;
 import br.com.carioquinha.dto.BebeCreateRequest;
+import br.com.carioquinha.dto.BebeGetRequest;
 import br.com.carioquinha.dto.BebeResponse;
 import br.com.carioquinha.repository.BebeRepository;
 import br.com.carioquinha.repository.LogAuditoriaRepository;
@@ -42,9 +43,11 @@ public class BebeService {
         return toResponse(bebe);
     }
     @Transactional
-    public List<BebeResponse> listarTodosBebes() {
+    public List<BebeResponse> listarTodosBebes(String nome) {
 
-        List<Bebe> bebes = Bebe.findAll().list();
+        List<Bebe> bebes = Bebe
+                .find("nome like ?1", "%" + nome + "%")
+                .list();
 
         return bebes.stream()
                 .map(this::toResponse)
