@@ -22,7 +22,7 @@ CREATE TABLE maternidade (
 CREATE TABLE bebe (
     id                     BIGINT(20) NOT NULL AUTO_INCREMENT,
     nome                   VARCHAR(150) NOT NULL,
-    data_nascimento        TIMESTAMP NOT NULL,
+    data_nascimento        DATE NOT NULL,
     nome_mae               VARCHAR(150) NOT NULL,
     nome_pai               VARCHAR(150) NULL DEFAULT NULL,
     maternidade_id         BIGINT(20) NOT NULL,
