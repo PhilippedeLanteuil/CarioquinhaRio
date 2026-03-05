@@ -15,7 +15,6 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
         if (ex instanceof WebApplicationException wae) {
             int status = wae.getResponse() != null ? wae.getResponse().getStatus() : 500;
 
-            // Para 404 (consulta sem resultados), você pode retornar só o status (sem body)
             if (status == 404 && (wae.getMessage() == null || wae.getMessage().isBlank())) {
                 return Response.status(404).build();
             }
