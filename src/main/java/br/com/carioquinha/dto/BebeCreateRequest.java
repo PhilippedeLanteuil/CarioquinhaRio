@@ -1,12 +1,13 @@
 package br.com.carioquinha.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 public class BebeCreateRequest {
     public String nome;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    public LocalDateTime dataNascimento;
+    public LocalDate dataNascimento;
     public String nomeMae;
     public String nomePai; // opcional
     public Long maternidadeId;

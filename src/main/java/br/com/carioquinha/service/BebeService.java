@@ -2,6 +2,7 @@ package br.com.carioquinha.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
+
 
 @ApplicationScoped
 public class BebeService {
@@ -43,16 +45,36 @@ public class BebeService {
         return toResponse(bebe);
     }
     @Transactional
-    public List<BebeResponse> listarTodosBebes(String nome) {
+    public List<BebeResponse> listarTodosBebes(String nome, String dataNascimento, Long maternidadeId) {
 
-        List<Bebe> bebes = Bebe
-                .find("nome like ?1", "%" + nome + "%")
-                .list();
+        String query = "1=1";
+        Parameters params = new Parameters();
+
+        if (nome != null && !nome.isBlank()) {
+            query += " and nome like :nome";
+            params.and("nome", "%" + nome + "%");
+        }
+
+        if (dataNascimento != null) {
+            LocalDate parsed = LocalDate.parse(dataNascimento);
+
+            query += " and dataNascimento = :dataNascimento";
+            params.and("dataNascimento", parsed);
+        }
+
+        if (maternidadeId != null) {
+            query += " and maternidade.id = :maternidadeId";
+            params.and("maternidadeId", maternidadeId);
+        }
+
+        List<Bebe> bebes = Bebe.find(query, params).list();
 
         return bebes.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
+
     }
+
     public void enviarlogAuditoria(Bebe bebe, String operador){
         try {
             LogAuditoria log = new LogAuditoria();

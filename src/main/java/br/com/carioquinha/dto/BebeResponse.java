@@ -2,13 +2,14 @@ package br.com.carioquinha.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 public class BebeResponse {
     public Long id;
     public String nome;
-    public LocalDateTime dataNascimento;
+    public LocalDate dataNascimento;
 
     public String nomeMae;
     public String nomePai;

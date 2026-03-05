@@ -32,7 +32,7 @@ public class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
 
         return Response.status(500)
                 .type(MediaType.APPLICATION_JSON)
-                .entity(new ErrorResponse("Erro inesperado"))
+                .entity(ex)
                 .build();
     }
 }

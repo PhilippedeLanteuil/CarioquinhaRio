@@ -18,7 +18,7 @@ public class Bebe extends PanacheEntityBase {
     public String nome;
 
     @Column(name = "data_nascimento", nullable = false)
-    public LocalDateTime dataNascimento;
+    public LocalDate dataNascimento;
 
     @Column(name = "nome_mae", nullable = false, length = 150)
     public String nomeMae;

@@ -31,9 +31,13 @@ public class BebeController {
 
     @GET
     public Response listarBebes(@BeanParam BebeGetRequest req){
-        List<BebeResponse> listaBebes = bebeService.listarTodosBebes(req.getNome());
+
+        List<BebeResponse> listaBebes = bebeService.listarTodosBebes(
+                req.getNome(),
+                req.getDataNascimento(),
+                req.getMaternidadeId()
+        );
+
         return Response.status(Response.Status.OK).entity(listaBebes).build();
-
     }
-
 }
